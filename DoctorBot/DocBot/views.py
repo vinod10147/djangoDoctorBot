@@ -6,6 +6,9 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 
+import re
+from collections import Counter
+
 import nltk
 import sys
 
@@ -25,7 +28,7 @@ f = open("/home/md/DoctorBot/DocBot/files/MedicalData")
 
 AllWords = f.read().split('\n')
 
-generalWords = ['symptoms','exams and tests','surgery','causes']
+generalWords = ['symptoms','exams and tests','surgery','causes','treatment','description','home care']
 
 # cold fever
 given = []
@@ -43,6 +46,49 @@ mainDict = pickle.load(open('/home/md/DoctorBot/DocBot/files/newDict'))
 MedicalList = []
 
 chats=[]
+
+def words(text): return re.findall(r'\w+', text.lower())
+
+#WORDS = Counter(words(open('WordsDict.txt').read()))
+WORDS = Counter(words(open('/home/md/DoctorBot/DocBot/files/Medicaltext').read()))
+#print Counter(WORDS).most_common(10)
+#print WORDS['cancer']
+    
+def P(word, N=sum(WORDS.values())): 
+    "Probability of `word`."
+    return float(WORDS[word]) / float(N)
+
+def correction(word): 
+    "Most probable spelling correction for word."
+    k = candidates(word);
+    print k
+    return max(candidates(word), key=P)
+
+def candidates(word): 
+    "Generate possible spelling corrections for word."
+    return (known([word]) or known(edits1(word)) or known(edits2(word)) or [word])
+
+def known(words): 
+    "The subset of `words` that appear in the dictionary of WORDS."
+    return set(w for w in words if w in WORDS)
+
+def edits1(word):
+    "All edits that are one edit away from `word`."
+    letters    = 'abcdefghijklmnopqrstuvwxyz'
+    splits     = [(word[:i], word[i:])    for i in range(len(word) + 1)]
+    deletes    = [L + R[1:]               for L, R in splits if R]
+    transposes = [L + R[1] + R[0] + R[2:] for L, R in splits if len(R)>1]
+    replaces   = [L + c + R[1:]           for L, R in splits if R for c in letters]
+    inserts    = [L + c + R               for L, R in splits for c in letters]
+    return set(deletes + transposes + replaces + inserts)
+
+def edits2(word): 
+    "All edits that are two edits away from `word`."
+    return (e2 for e1 in edits1(word) for e2 in edits1(e1))
+
+
+
+
 
 # Create your views here.
 
@@ -81,9 +127,9 @@ def tokenize( query ):
 
 def correctTokens( tokens ):
 
-	#  permut + implement trie 
+	for i in range(len(tokens)):
+		tokens[i]=correction(tokens[i]);
 	pass
-
 
 
 def filterTokens( tokens ):
@@ -164,7 +210,10 @@ def findResult():
 	print "To find ------",toFind
 	for element in given:
 		for find in set(toFind):
-			temps.append(str(mainDict[element[0]][1][find]))
+			if find not in mainDict[element[0]][1]:
+				temps.append(find+": Not Available")
+			else:
+				temps.append(str(mainDict[element[0]][1][find]))
 	return str(temps)
 
 def checkAllSymptoms():
@@ -191,13 +240,14 @@ def findDisease():
 	except:
 		return l
 
-
+incomp=False
 def processQueryByClient(query):
-	
+	print mainDict['cancer']
 	global given
 	global toFind
-	given=[]
-	toFind=[]
+	if incomp==False:
+		given=[]
+		toFind=[]
 
 	print "tokenizing"
 	tokens = tokenize( query.lower() )
@@ -219,9 +269,20 @@ def processQueryByClient(query):
 
 	print "To find list",toFind
 
-
+	global incomp
 	#to find disease from symptoms
-	if checkAllSymptoms() ==1:
+	if toFind==[] and checkAllSymptoms() ==1:
+		incomp=False
 		return findDisease()
 	else:
-		return findResult()
+		print 'hi'
+		out=findResult()
+		print out
+		if out=='[]':
+			st="What are you searching for:\n1.Symptoms<br>2.Treatment<br/>3.Causes<br/>4.Home Care<br/>5.Tests<br/>6.Surgery"
+			
+			incomp=True
+			return st
+		else:
+			incomp=False
+			return out
