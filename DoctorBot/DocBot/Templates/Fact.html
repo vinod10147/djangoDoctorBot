@@ -1,7 +1,6 @@
 <!-- <!DOCTYPE html>
 <html>
 <body>
-
 <form action="/db/factorial1" method="POST">
 {% csrf_token %}
   First name:<br>
@@ -11,14 +10,10 @@
   <input type="text" name="lastname" value="Mouse">
   <br><br>
   <input type="submit" value="Submit">
-</form> 
-
-
-
+</form>
 <h1>
 	{{factorial123}}
 </h1>
-
 </body>
 </html>
  -->
@@ -37,7 +32,7 @@
     vertical-align: middle;
     margin-top: 100px;
     top:10px;
-    
+
 }
 .col-md-2, .col-md-10{
     padding:0;
@@ -119,7 +114,6 @@ img {
     border-left-color: rgba(0, 0, 0, 0);
     border-bottom-color: rgba(0, 0, 0, 0);
 }
-
 .base_sent {
   justify-content: flex-end;
   align-items: flex-end;
@@ -136,42 +130,33 @@ img {
     border-top-color: transparent;
     box-shadow: 1px 1px 2px rgba(black, 0.2); // not quite perfect but close
 }
-
 .msg_sent > time{
     float: right;
 }
-
-
-
 .msg_container_base::-webkit-scrollbar-track
 {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
     background-color: #F5F5F5;
 }
-
 .msg_container_base::-webkit-scrollbar
 {
     width: 12px;
     background-color: #F5F5F5;
 }
-
 .msg_container_base::-webkit-scrollbar-thumb
 {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
     background-color: #555;
 }
-
 .btn-group.dropup{
     position:fixed;
     left:0px;
     bottom:0;
 }
-
     </style>
     <script type="text/javascript">
     var objDiv = document.getElementById("your_div");
 objDiv.scrollTop = objDiv.scrollHeight;
-
         $(document).on('click', '.panel-heading span.icon_minim', function (e) {
     var $this = $(this);
     if (!$this.hasClass('panel-collapsed')) {
@@ -203,12 +188,11 @@ $(document).on('click', '.icon_close', function (e) {
     //$(this).parent().parent().parent().parent().remove();
     $( "#chat_window_1" ).remove();
 });
-    
 
     </script>
-    
+
     <link rel="stylesheet" type="text/css" >
-        
+
     </link>
  <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
@@ -220,23 +204,30 @@ $(document).on('click', '.icon_close', function (e) {
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
 
 </head>
-<body>  
-<nav class="navbar navbar-inverse">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="#">DoctorBot</a>
+<body>
+  <nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">DoctorBot</a>
+      </div>
+      <div class="collapse navbar-collapse" id="myNavbar">
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="#">Home</a></li>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Detaila</a></li>
+          <li><a href="#">Credits</a></li>
+        </ul>
+      </div>
     </div>
-    <ul class="nav navbar-nav">
-      <li class="active"><a href="#">Home</a></li>
-      <li><a href="#">About Us</a></li>
-      <li><a href="#">Details</a></li>
-      <li><a href="#">Credits</a></li>
-    </ul>
-  </div>
-</nav>
+  </nav>
 
 <div class="container">
-    <div class="row chat-window col-xs-5 col-md-12" id="chat_window_1" style="margin-left:10px;">
+    <div class="row chat-window col-xs-12 col-md-12" id="chat_window_1" style="margin-left:10px;">
         <div class="col-xs-12 col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading top-bar">
@@ -248,12 +239,12 @@ $(document).on('click', '.icon_close', function (e) {
                         <a href="#"><span class="glyphicon glyphicon-remove icon_close" data-id="chat_window_1"></span></a>
                     </div>
                 </div>
-                
+
 
                 <div class="panel-body msg_container_base">
                 {% for message in chats %}
                 {% if message.0 == 0 %}
-                
+
                     <div class="row msg_container base_sent">
                         <div class="col-md-10 col-xs-10">
                             <div class="messages msg_sent"  style="background-color: #e8fce0">
@@ -261,19 +252,19 @@ $(document).on('click', '.icon_close', function (e) {
                                 <time datetime="2009-11-13T20:00">Timothy • 51 min</time>
                             </div>
                         </div>
-                        
+
                     </div>
                 {% else %}
                     <div class="row msg_container base_receive">
                         <div class="col-md-10 col-xs-10">
                             <div class="messages msg_receive" style="background-color: #fce8de">
-                                <p>{{message.1}}</p>     
+                                <p>{{message.1}}</p>
                                 <time datetime="2009-11-13T20:00">Timothy • 51 min</time>
                             </div>
                         </div>
                     </div>
                  {% endif %}
-                 {% endfor %}  
+                 {% endfor %}
                 </div>
                 <form action="/db/factorial1" method="POST" >
                 {% csrf_token %}
@@ -289,8 +280,8 @@ $(document).on('click', '.icon_close', function (e) {
             </div>
         </div>
     </div>
-    
-   
+
+
 </div>
 </body>
 </html>
